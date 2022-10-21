@@ -1,0 +1,7 @@
+{
+    // Cài đặt này để cho Babel biết sử dụng preset-env và preset-react trong việc hỗ trợ chuyển đổi mã.
+    "presets": [
+        "@babel/preset-env",
+        "@babel/preset-react"
+    ]
+}

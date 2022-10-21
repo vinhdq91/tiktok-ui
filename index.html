@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="courseList.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        function PostItem(props){
+            var random = 0;
+            if (typeof props.fnCallBack === "function")
+                random = props.fnCallBack(Math.random());
+            return (
+                <div className="post-item">
+                    <h2 className="post-title" title={props.title}>{props.course}</h2>
+                    <p className="post-desc">{props.desc}</p>
+                    <p>{props.contents}</p> 
+                    <p>Random number: {random}</p> 
+                </div>
+            )
+        }
+
+        function App() {
+            const handleClick = (course) => alert("Title course: " + course.title);
+            const Form = {
+                Input() {
+                    return <input type="text" value="Hello"/>
+                },
+                CheckBox() {
+                    return <input type="checkBox" />
+                },
+                Radio() {
+                    return <input type="radio" />
+                }
+            };
+            const type = 'Radio';
+            const ComponentInputType = Form[type];
+            const cars = ["BMW", "VinFast", "Tesla", "Toyota"];
+            return (
+                <div className="post-courses">
+                    <PostItem title="C# Net title" 
+                              course="C# Net" 
+                              desc="Khoa hoc C# Net" 
+                              contents="[{DI-Container: 1}, {Middleware: 2}, {Hash: 3}]"/>
+                    <hr />
+                    <PostItem title="Visual Basic title" 
+                              course="Visual Basic" 
+                              desc="Khoa hoc Visual Basic"
+                              fnCallBack={(random) => { return random; }}/>
+                    <hr />
+                    <PostItem title="Java title" 
+                              course="Java" 
+                              desc="Khoa hoc Java"
+                              contents="[{Object: 1}, {Convert: 2}]"/>
+                    <hr />
+                    
+                    {courseListResource.map(courseItem => 
+                        <CourseList key={courseItem.id}
+                                    course={courseItem}
+                                    onClick={handleClick} />    
+                    )}
+
+                    <hr />
+                    <ComponentType title="Click me!" 
+                                    href="https://fullstack.edu.vn" 
+                                    onClick={() => console.log(Math.random())} />
+                    <hr />
+                    <Form.Input />
+                    <Form.CheckBox />
+                    <ComponentInputType />
+                    <hr />
+                    <div id="childrenProps-tutor">
+                        <ListCars data={cars}>
+                            {(item, index) => <li key={index}>{item}</li>}
+                        </ListCars>
+                    </div>
+                </div>
+            )
+        }
+
+        // Customize tag type base on component
+        function ComponentType({title, ...componentType}) {
+            let Component = 'button';
+            const props = {};
+            if (componentType.href) {
+                Component = 'a';
+                props.href = componentType.href;
+            }
+            if (componentType.onClick) {
+                props.onClick = componentType.onClick;
+            }
+            
+            return (
+                <Component {...props}>{title}</Component>
+            )
+        }
+
+        // Destructuring as input parameter
+        // UI Component (Chỉ hiển thị, không xử lý logic)
+        function CourseList({course, onClick}) {
+            return (
+                <div>
+                    <h2 onClick={() => onClick(course)}>{course.id} - {course.title}</h2>
+                    <h3>{course.description}</h3>
+                    <img src={course.image_url} />
+                    <h3>{course.is_published}</h3>
+                </div>
+            )
+        }
+
+        // Children Props Tutor
+        function ListCars({data, children}){
+            // Vì children chính là phần function: {(item, index) => <li key="index">{item}</li>} nên có thể return như ở dưới
+            return (
+                <ul>
+                    {data.map(children)}
+                </ul>
+            )
+
+            // Hoặc như này sẽ dễ hiểu hơn
+            // return (
+            //     <ul>
+            //         {data.map((...props) => children(...props))}
+            //     </ul>
+            // )
+        }
+
+        const rootDom = document.getElementById("root");
+        const root = ReactDOM.createRoot(rootDom);
+        root.render(<App />);
+    </script>
+</body>
+</html>
